@@ -1,0 +1,12 @@
+@startuml "PathFinder"
+
+Tree *--> Node
+Tree *--> Menu
+Node ..> Direction 
+Node ..> TypesNode
+Menu ..> Console 
+Draw ..> Console 
+Draw --> Node  
+Draw --> PyGraphviz
+
+@enduml
