@@ -36,9 +36,23 @@ class Node:
         return self.__childrens[direction._value_]
 
     def delete(self, node) -> None:
-        print("ELiminar ", node)
         if node.__type_node.is_parent_with_two_childs():
-            pass
+            node.get(Direction.RIGHT).__get_last_in(Direction.LEFT).changes_position(
+                node
+            )
+
+        elif node.__type_node.is_parent_with_one_child():
+            right, left = node.get(Direction.RIGHT), node.get(Direction.LEFT)
+            if right:
+                right.changes_position(node)
+            elif left:
+                left.changes_position(node)
+        else:
+            node.__parent = None
+
+    def changes_position(self, parent) -> None:
+        self.__parent = parent.__parent
+        parent.__parent = None
 
     def __have_childrends(self, numbers_childs: int) -> bool:
         count = 0
