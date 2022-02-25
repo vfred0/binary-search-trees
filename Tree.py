@@ -6,11 +6,21 @@ from Draw import Draw
 class Tree:
     def __init__(self) -> None:
         self.__root: Node = None
+        self.__nodes: list[Node] = []
 
     def show(self) -> None:
-        self.__recursive_print(self.__root, 0)
+        if not self.is_empty():
+            print("#############")
+            print("Arbol")
+            self.__print(self.__root, 0)
+            print("#############")
+        else:
+            print("El aŕbol está sin nodos!!!")
 
-    def __recursive_print(self, node: Node, level: int) -> None:
+    def is_empty(self) -> bool:
+        return self.__root is None
+
+    def __print(self, node: Node, level: int) -> None:
         if node:
             for i in range(level):
                 if i < (level - 1):
@@ -20,53 +30,45 @@ class Tree:
 
             print(node)
             level += 1
-            self.__recursive_print(node.get(Direction.LEFT), level)
-            self.__recursive_print(node.get(Direction.RIGHT), level)
+            self.__print(node.get(Direction.LEFT), level)
+            self.__print(node.get(Direction.RIGHT), level)
 
     def add(self, node: Node) -> None:
-        if self.__root:
+        if not self.is_empty():
             self.__root.add(node)
         else:
             self.__root = node
 
     def delete(self, node: Node) -> None:
-        if self.contains(node):
-            self.__root.delete(node)
+        if node.have_childrens() or node.have_parent():
+            if self.contains(node):
+                self.__root.delete(node)
+            else:
+                print("No existe!!!", node)
+        else:
+            self.__root = None
 
-    # def update(self, node_search: Node, node_update: Node) -> None:
-    #     self.__root.update(node_search, node_update)
+    def update(self, node_search: Node, value: str) -> None:
+        if self.contains(node_search):
+            node_search.set_name(value)
+        else:
+            print("No existe!!!", node_search)
 
     def contains(self, node: Node) -> bool:
-        return self.__root.exists(node)
+        if not self.is_empty():
+            return self.__root.find(node)
+        return False
 
-    # def get_root(self) -> Node:
-    #     return self.__root
+    def get_nodes(self) -> list[Node]:
+        self.__nodes = []
+        self.__set_nodes(self.__root)
+        return self.__nodes
 
+    def get_node(self, position: int) -> Node:
+        return self.get_nodes()[position]
 
-tree = Tree()
-tree.add(Node("A", 16))
-tree.add(Node("B", 8))
-tree.add(Node("C", 24))
-x = Node("G", 3)
-tree.add(x)
-tree.add(Node("D3", 19))
-tree.add(Node("D2", 13))
-tree.add(Node("E", 7))
-tree.add(Node("F", 21))
-# tree.add(Node("H", 1))
-# tree.add(Node("I", 11))
-# tree.add(x)
-# tree.delete(x)
-tree.delete(x)
-tree.show()
-# print(tree.contains(Node("x", 23)))
-# print(tree.contains(x))
-# print(tree.contains(Node("C", 24)))
-# tree.delete(Node("A", 2))
-
-
-# print(x.get_parent().get_parent())
-# tree.delete(Node("12"))
-# tree.update(a, Node("A", 12))
-# tree.get_all_nodes()
-# tree.exists(Node("A"))
+    def __set_nodes(self, node: Node) -> None:
+        if node:
+            self.__nodes.append(node)
+            self.__set_nodes(node.get(Direction.RIGHT))
+            self.__set_nodes(node.get(Direction.LEFT))
