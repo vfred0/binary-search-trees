@@ -6,7 +6,7 @@ class Node:
     def __init__(self, value: str, cost: int) -> None:
         self.__value = value
         self.__cost = cost
-        self.__childrens = [None] * 2
+        self.__childrens: dict[Direction, Node] = {}
         self.__parent: Node = None
         self.__type_node: TypesNode = TypesNode.LEAF
 
@@ -22,9 +22,9 @@ class Node:
     def __add_to(self, direction: Direction, children) -> None:
         current_children = self.get(direction)
         if not current_children:
-            self.__childrens[direction._value_] = children
+            self.__childrens[direction] = children
             children.__parent = self
-            if self.__have_childrends(2):
+            if self.__childrens.__len__(2):
                 self.__type_node = TypesNode.PARENT_WITH_TWO_CHILDS
             else:
                 self.__type_node = TypesNode.PARENT_WITH_ONE_CHILD
@@ -35,31 +35,31 @@ class Node:
     def get(self, direction: Direction):
         return self.__childrens[direction._value_]
 
-    def delete(self, node) -> None:
-        if node.__type_node.is_parent_with_two_childs():
-            node.get(Direction.RIGHT).__get_last_in(Direction.LEFT).changes_position(
-                node
-            )
+    def delete(self, delete_node) -> None:
+        if delete_node.__type_node.is_parent_with_two_childs():
+            change_node = delete_node.get(Direction.RIGHT).__get_last_in(Direction.LEFT)
+            change_node = delete_node
+            delete_parent_node = delete_node.__parent
+            direction = None
+            for k, node in delete_parent_node.__childrens.items():
+                if node == delete_node:
+                    direction = k
+            delete_parent_node.__childrens[direction] = change_node
 
-        elif node.__type_node.is_parent_with_one_child():
-            right, left = node.get(Direction.RIGHT), node.get(Direction.LEFT)
+        elif delete_node.__type_node.is_parent_with_one_child():
+            right, left = delete_node.get(Direction.RIGHT), delete_node.get(
+                Direction.LEFT
+            )
             if right:
-                right.changes_position(node)
+                right.changes_position(delete_node)
             elif left:
-                left.changes_position(node)
+                left.changes_position(delete_node)
         else:
-            node.__parent = None
+            delete_node.__parent = None
 
     def changes_position(self, parent) -> None:
         self.__parent = parent.__parent
         parent.__parent = None
-
-    def __have_childrends(self, numbers_childs: int) -> bool:
-        count = 0
-        for i in self.get_childrens():
-            if i:
-                count += 1
-        return numbers_childs == count
 
     def exists(self, node) -> bool:
         if node:
@@ -97,9 +97,3 @@ class Node:
 
     def __gt__(self, __o: object) -> bool:
         return self.__cost > __o.__cost
-
-    # def __eq__(self, __o: object) -> bool:
-    #     return self.__cost == __o.__cost and self.__value == self.__value
-
-
-# print(all(i for i in [Node("A", 2), Node("A", 2)]))
