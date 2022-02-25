@@ -34,9 +34,10 @@ class Node:
     def __get_last_in(self, direction: Direction):
         if not self.__type_node.is_leaf():
             iterator = self.get(direction)
-            while iterator and iterator.get(direction):
+            while iterator is not None and iterator.get(direction):
                 iterator = iterator.get(direction)
-            return iterator
+            if iterator:
+                return iterator
 
         return self
 
@@ -49,9 +50,10 @@ class Node:
 
         elif delete_node.__type_node.is_parent_with_one_child():
             change_node = list(delete_node.__childrens.values())[0]
-            direction = delete_node.__parent.get_direction(delete_node)
-            change_node.__parent = delete_node.__parent
-            delete_node.__parent.__childrens[direction] = change_node
+            delete_node.__value = change_node.__value
+            delete_node.__cost = change_node.__cost
+            delete_node.__type_node = change_node.__type_node
+            delete_node.__childrens = change_node.__childrens
 
         else:
             direction = delete_node.__parent.get_direction(delete_node)
@@ -67,8 +69,10 @@ class Node:
     def __update_type_node(self):
         if self.__childrens.__len__() == 2:
             self.__type_node = TypesNode.PARENT_WITH_TWO_CHILDS
-        else:
+        elif self.__childrens.__len__() == 1:
             self.__type_node = TypesNode.PARENT_WITH_ONE_CHILD
+        else:
+            self.__type_node = TypesNode.LEAF
 
     def changes_position(self, parent) -> None:
         self.__parent = parent.__parent
@@ -91,6 +95,9 @@ class Node:
     def have_parent(self) -> bool:
         return self.__parent
 
+    def have_childrens(self) -> bool:
+        return self.__childrens
+
     def get_parent(self):
         return self.__parent
 
@@ -98,7 +105,7 @@ class Node:
         return self.__value
 
     def get_cost(self) -> str:
-        return self.__costs
+        return self.__cost
 
     def set_name(self, name: str) -> None:
         self.__value = name
