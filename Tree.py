@@ -72,3 +72,14 @@ class Tree:
             self.__nodes.append(node)
             self.__set_nodes(node.get(Direction.RIGHT))
             self.__set_nodes(node.get(Direction.LEFT))
+
+
+ss = Tree()
+x = Node("1", 23)
+ss.add(Node("2", 233))
+ss.add(Node("2", 233))
+ss.add(Node("2", 23))
+ss.add(x)
+
+ss.show()
+print(ss.contains(x))
