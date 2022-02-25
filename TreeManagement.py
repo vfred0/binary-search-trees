@@ -13,6 +13,7 @@ class TreeManagement:
                 "Ingreso de nodos",
                 "Actualización de nodos",
                 "Eliminación de nodos",
+                "Buscar nodo",
                 "Mostrar",
                 "Salir",
             ],
@@ -28,6 +29,8 @@ class TreeManagement:
             if self.__menu.is_option(3):
                 self.__delete_nodes()
             if self.__menu.is_option(4):
+                self.__search()
+            if self.__menu.is_option(5):
                 self.__show_tree()
 
             self.__menu.interact()
@@ -64,6 +67,12 @@ class TreeManagement:
                 menu = Menu("Eliminacion de nodos", self.__options())
                 self.__show_tree()
             menu.interact()
+
+    def __search(self) -> None:
+        if self.__tree.contains(Node(Console.read_str("Nombre: "), 0)):
+            input("Se ha encontrado el nodo!!!!")
+        else:
+            input("No se ha encontrado el nodo!!!!")
 
     def __options(self) -> list[str]:
         result = []

@@ -8,7 +8,7 @@ class Node:
         self.__cost = cost
         self.__childrens: dict[Direction, Node] = {}
         self.__parent: Node = None
-        self.__type_node: TypesNode = TypesNode.LEAF
+        self.__type_node: TypesNode = TypesNode.CHILDREN
 
     def add(self, children) -> None:
         if children > self:
@@ -68,7 +68,7 @@ class Node:
         self.__type_node = TypesNode.get(self.__childrens.__len__())
 
     def find(self, node) -> bool:
-        find = self == node
+        find = self.__value == node.__value
         if not find:
             if node > self:
                 check = self.get(Direction.RIGHT)
