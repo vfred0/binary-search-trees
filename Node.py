@@ -24,11 +24,7 @@ class Node:
         if not current_children:
             self.__childrens[direction] = children
             children.__parent = self
-            if self.__childrens.__len__() == 2:
-                self.__type_node = TypesNode.PARENT_WITH_TWO_CHILDS
-            else:
-                self.__type_node = TypesNode.PARENT_WITH_ONE_CHILD
-
+            self.__update_type_node()
         else:
             current_children.add(children)
 
@@ -52,24 +48,27 @@ class Node:
             self.delete(change_node)
 
         elif delete_node.__type_node.is_parent_with_one_child():
-            right, left = delete_node.get(Direction.RIGHT), delete_node.get(
-                Direction.LEFT
-            )
-            if right:
-                change_node = right
-            elif left:
-                change_node = left
-
-            delete_node.__value = change_node.__value
-            delete_node.__cost = change_node.__cost
-            delete_node.__childrens = change_node.__childrens
-            delete_node.__type_node = change_node.__type_node
-            self.delete(change_node)
+            change_node = list(delete_node.__childrens.values())[0]
+            direction = delete_node.__parent.get_direction(delete_node)
+            change_node.__parent = delete_node.__parent
+            delete_node.__parent.__childrens[direction] = change_node
 
         else:
-            print(delete_node)
+            direction = delete_node.__parent.get_direction(delete_node)
+            del delete_node.__parent.__childrens[direction]
+            delete_node.__parent.__update_type_node()
 
-        # delete_node.__parent = None
+    def get_direction(self, node):
+        for direction, _node in self.__childrens.items():
+            if _node == node:
+                return direction
+        return None
+
+    def __update_type_node(self):
+        if self.__childrens.__len__() == 2:
+            self.__type_node = TypesNode.PARENT_WITH_TWO_CHILDS
+        else:
+            self.__type_node = TypesNode.PARENT_WITH_ONE_CHILD
 
     def changes_position(self, parent) -> None:
         self.__parent = parent.__parent
@@ -108,7 +107,18 @@ class Node:
         self.__cost = cost
 
     def __str__(self) -> str:
-        return f"{self.__value}: {self.__cost} {self.__type_node}"
+        result = f"{self.__value}: {self.__cost} {self.__type_node} "
+        direction = None
+        if self.__parent:
+            direction = self.__parent.get_direction(self)
+        if direction:
+            return result.__add__(f"{direction}")
+        return result
 
     def __gt__(self, __o: object) -> bool:
         return self.__cost > __o.__cost
+
+
+# l = {Direction.RIGHT: Node("1", 1)}
+
+# print(list(l.values())[0])
