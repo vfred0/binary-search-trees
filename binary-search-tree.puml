@@ -1,0 +1,11 @@
+@startuml "BST"
+Tree *-> Node 
+Node *--> TypesNode 
+Node --> Direction
+TreeManagement *-> Tree 
+Menu ..> Console
+TreeManagement *--> Menu 
+TreeManagement ..> Node 
+Tree ..> Direction
+
+@enduml
