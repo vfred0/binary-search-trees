@@ -40,11 +40,9 @@ class Node:
             change_node = delete_node.get(Direction.RIGHT).__get_last_in(Direction.LEFT)
             change_node = delete_node
             delete_parent_node = delete_node.__parent
-            direction = None
-            for k, node in delete_parent_node.__childrens.items():
+            for direction, node in delete_parent_node.__childrens.items():
                 if node == delete_node:
-                    direction = k
-            delete_parent_node.__childrens[direction] = change_node
+                    delete_parent_node.__childrens[direction] = change_node
 
         elif delete_node.__type_node.is_parent_with_one_child():
             right, left = delete_node.get(Direction.RIGHT), delete_node.get(
