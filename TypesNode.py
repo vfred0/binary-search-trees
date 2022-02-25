@@ -15,5 +15,8 @@ class TypesNode(Enum):
     def is_parent_with_two_childs(self):
         return self == TypesNode.PARENT_WITH_TWO_CHILDS
 
+    def get(position: int):
+        return [i for i in TypesNode][position]
+
     def __str__(self) -> str:
         return self._value_
