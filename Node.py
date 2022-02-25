@@ -51,6 +51,7 @@ class Node:
             delete_node.__cost = change_node.__cost
             delete_node.__type_node = change_node.__type_node
             delete_node.__childrens = change_node.__childrens
+            delete_node.__update_type_node()
 
         else:
             direction = delete_node.__parent.get_direction(delete_node)
@@ -64,10 +65,7 @@ class Node:
         return None
 
     def __update_type_node(self):
-        position = self.__childrens.__len__() - 1
-        if position < 0:
-            position = 0
-        self.__type_node = TypesNode.get(position)
+        self.__type_node = TypesNode.get(self.__childrens.__len__())
 
     def find(self, node) -> bool:
         find = self == node

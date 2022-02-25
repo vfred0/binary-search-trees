@@ -58,14 +58,10 @@ class TreeManagement:
         menu.interact()
         while not menu.is_option_exit():
             node = self.__get_node(menu.get_option())
-
-            print("Asi se encuentra el árbol")
             self.__tree.show()
-
             if Console.is_yes(f"¿Estás seguro de eliminar el nodo '{node}'? (Y/n): "):
                 self.__tree.delete(node)
                 menu = Menu("Eliminacion de nodos", self.__options())
-                print(f"Se ha eliminado el nodo {node}")
                 self.__show_tree()
             menu.interact()
 
