@@ -10,9 +10,6 @@ class Node:
         self.__parent: Node = None
         self.__type_node: TypesNode = TypesNode.LEAF
 
-    def contains(self, node) -> bool:
-        return self.__childrens.__contains__(node)
-
     def add(self, children) -> None:
         if children > self:
             self.__add_to(Direction.RIGHT, children)
@@ -67,16 +64,10 @@ class Node:
         return None
 
     def __update_type_node(self):
-        if self.__childrens.__len__() == 2:
-            self.__type_node = TypesNode.PARENT_WITH_TWO_CHILDS
-        elif self.__childrens.__len__() == 1:
-            self.__type_node = TypesNode.PARENT_WITH_ONE_CHILD
-        else:
-            self.__type_node = TypesNode.LEAF
-
-    def changes_position(self, parent) -> None:
-        self.__parent = parent.__parent
-        parent.__parent = None
+        position = self.__childrens.__len__() - 1
+        if position < 0:
+            position = 0
+        self.__type_node = TypesNode.get(position)
 
     def find(self, node) -> bool:
         find = self == node
@@ -89,17 +80,11 @@ class Node:
                 return check.find(node)
         return find
 
-    def get_childrens(self) -> list:
-        return self.__childrens
-
     def have_parent(self) -> bool:
         return self.__parent
 
     def have_childrens(self) -> bool:
         return self.__childrens
-
-    def get_parent(self):
-        return self.__parent
 
     def get_value(self) -> str:
         return self.__value
@@ -109,9 +94,6 @@ class Node:
 
     def set_name(self, name: str) -> None:
         self.__value = name
-
-    def set_cost(self, cost: int) -> None:
-        self.__cost = cost
 
     def __str__(self) -> str:
         result = f"{self.__value}: {self.__cost} {self.__type_node} "
@@ -124,8 +106,3 @@ class Node:
 
     def __gt__(self, __o: object) -> bool:
         return self.__cost > __o.__cost
-
-
-# l = {Direction.RIGHT: Node("1", 1)}
-
-# print(list(l.values())[0])
