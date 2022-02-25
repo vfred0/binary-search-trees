@@ -38,35 +38,38 @@ class Node:
     def __get_last_in(self, direction: Direction):
         if not self.__type_node.is_leaf():
             iterator = self.get(direction)
-            while iterator:
+            while iterator and iterator.get(direction):
                 iterator = iterator.get(direction)
             return iterator
 
         return self
 
     def delete(self, delete_node) -> None:
-        print("eliminar ", delete_node)
         if delete_node.__type_node.is_parent_with_two_childs():
-            print(self.__get_last_in(Direction.LEFT))
-            # change_node = delete_node.get(Direction.RIGHT).__get_last_in(Direction.LEFT)
-            # change_node = delete_node
-            # delete_parent_node = delete_node.__parent
-            # for direction, node in delete_parent_node.__childrens.items():
-            #     if node == delete_node:
-            #         delete_parent_node.__childrens[direction] = change_node
+            change_node = delete_node.get(Direction.RIGHT).__get_last_in(Direction.LEFT)
+            delete_node.__value = change_node.__value
+            delete_node.__cost = change_node.__cost
+            self.delete(change_node)
 
         elif delete_node.__type_node.is_parent_with_one_child():
-            pass
-            # right, left = delete_node.get(Direction.RIGHT), delete_node.get(
-            #     Direction.LEFT
-            # )
-            # if right:
-            #     right.changes_position(delete_node)
-            # elif left:
-            #     left.changes_position(delete_node)
+            right, left = delete_node.get(Direction.RIGHT), delete_node.get(
+                Direction.LEFT
+            )
+            if right:
+                change_node = right
+            elif left:
+                change_node = left
+
+            delete_node.__value = change_node.__value
+            delete_node.__cost = change_node.__cost
+            delete_node.__childrens = change_node.__childrens
+            delete_node.__type_node = change_node.__type_node
+            self.delete(change_node)
+
         else:
-            pass
-            # delete_node.__parent = None
+            print(delete_node)
+
+        # delete_node.__parent = None
 
     def changes_position(self, parent) -> None:
         self.__parent = parent.__parent
